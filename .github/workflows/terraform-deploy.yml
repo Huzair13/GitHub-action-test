@@ -16,16 +16,6 @@ on:
         required: true
       AWS_SESSION_TOKEN:
         required: true
-  workflow_dispatch:
-    inputs:
-      approve_apply:
-        description: 'Approve to apply Terraform plan'
-        required: true
-        default: 'yes'
-      approve_destroy:
-        description: 'Approve to destroy Terraform infrastructure'
-        required: true
-        default: 'yes'
 
 jobs:
   terraform:
@@ -56,12 +46,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
 
-      - name: Ask for Approval to Apply Terraform
-        if: ${{ github.event.inputs.approve_apply == 'yes' }}
-        run: echo "Approved to apply Terraform plan"
-
       - name: Apply Terraform Plan
-        if: ${{ github.event.inputs.approve_apply == 'yes' }}
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ inputs.working_directory }}
         env:
@@ -69,15 +54,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
 
-      - name: Ask for Approval to Destroy Terraform
-        if: ${{ github.event.inputs.approve_destroy == 'yes' }}
-        run: echo "Approved to destroy Terraform infrastructure"
-
       - name: Destroy Terraform Infrastructure
-        if: ${{ github.event.inputs.approve_destroy == 'yes' }}
         run: terraform destroy -auto-approve
         working-directory: ${{ inputs.working_directory }}
-        env:
+        env:s
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}

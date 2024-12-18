@@ -29,6 +29,9 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
         working-directory: ${{ inputs.working_directory }}
+        
+      - name: Print environment variables
+        run: printenv
 
       - name: Validate Terraform
         run: terraform validate
@@ -56,3 +59,6 @@ jobs:
       - name: Apply Terraform Plan
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ inputs.working_directory }}
+
+      - name: Print environment variables
+        run: printenv

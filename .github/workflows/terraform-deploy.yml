@@ -87,6 +87,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    environment: terraform-approval  # Define environment for the entire job
 
     steps:
       - name: Checkout code
@@ -116,7 +117,6 @@ jobs:
       # Manual approval before applying the plan
       - name: Wait for Apply Approval
         if: ${{ github.event.inputs.approve_apply == 'yes' }}
-        environment: terraform-approval
         run: echo "Waiting for manual approval to apply Terraform plan."
 
       - name: Apply Terraform Plan
@@ -131,7 +131,6 @@ jobs:
       # Manual approval before destroying the infrastructure
       - name: Wait for Destroy Approval
         if: ${{ github.event.inputs.approve_destroy == 'yes' }}
-        environment: terraform-approval
         run: echo "Waiting for manual approval to destroy Terraform infrastructure."
 
       - name: Destroy Terraform Infrastructure

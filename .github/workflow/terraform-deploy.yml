@@ -1,0 +1,41 @@
+name: Reusable Terraform Workflow
+
+on:
+  workflow_call:
+    inputs:
+      terraform_version:
+        description: "The Terraform version to use"
+        default: "1.5.2"
+      working_directory:
+        description: "Directory containing Terraform files"
+        default: "./terraform"
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ${{ inputs.working_directory }}
+
+      - name: Validate Terraform
+        run: terraform validate
+        working-directory: ${{ inputs.working_directory }}
+
+      - name: Plan Terraform
+        run: terraform plan
+        working-directory: ${{ inputs.working_directory }}
+
+      - name: Apply Terraform (Manual Trigger)
+        if: github.event_name == 'workflow_dispatch'
+        run: terraform apply -auto-approve
+        working-directory: ${{ inputs.working_directory }}

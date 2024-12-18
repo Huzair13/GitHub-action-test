@@ -32,6 +32,11 @@ jobs:
         
       - name: Print environment variables
         run: printenv
+        env:
+          AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
+          AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}} 
+
 
       - name: Validate Terraform
         run: terraform validate
@@ -40,6 +45,11 @@ jobs:
       - name: Plan Terraform
         run: terraform plan -out=tfplan
         working-directory: ${{ inputs.working_directory }}
+        env:
+          AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
+          AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}} 
+
 
   deploy:
     name: Deploy
@@ -59,6 +69,14 @@ jobs:
       - name: Apply Terraform Plan
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ inputs.working_directory }}
+        env:
+          AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
+          AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}} 
 
       - name: Print environment variables
         run: printenv
+        env:
+          AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
+          AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}} 

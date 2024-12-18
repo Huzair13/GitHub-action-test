@@ -11,13 +11,18 @@ on:
         description: "Directory containing Terraform files"
         default: "./terraform"
         type: string
-      # secrets:
-      #   AWS_SECRET_ACCESS_KEY:
-      #     required: true
-      #   AWS_ACCESS_KEY_ID:
-      #     required: true
-      #   AWS_SESSION_TOKEN:
-      #     required: true
+      aws_access_key_id:
+        description: "AWS Access Key ID"
+        required: true
+        type: string
+      aws_secret_access_key:
+        description: "AWS Secret Access Key"
+        required: true
+        type: string
+      aws_session_token:
+        description: "AWS Session Token"
+        required: true
+        type: string
 
 jobs:
   validate-plan:
@@ -36,14 +41,13 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
         working-directory: ${{ inputs.working_directory }}
-        
-      - name: Print environment variables
+
+      - name: Print environment variables (for debugging, should be removed in production)
         run: printenv
         env:
-          AWS_SESSION_TOKEN: ${{secrets.AWS_SESSION_TOKEN}}
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}} 
-
+          AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
+          AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
 
       - name: Validate Terraform
         run: terraform validate
@@ -53,10 +57,9 @@ jobs:
         run: terraform plan -out=tfplan
         working-directory: ${{ inputs.working_directory }}
         env:
-          AWS_SESSION_TOKEN: ${{secrets.AWS_SESSION_TOKEN}}
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}} 
-
+          AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
+          AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
 
   deploy:
     name: Deploy
@@ -77,13 +80,13 @@ jobs:
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ inputs.working_directory }}
         env:
-          AWS_SESSION_TOKEN: ${{secrets.AWS_SESSION_TOKEN}}
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}} 
+          AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
+          AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
 
-      - name: Print environment variables
+      - name: Print environment variables (for debugging, should be removed in production)
         run: printenv
         env:
-          AWS_SESSION_TOKEN: ${{secrets.AWS_SESSION_TOKEN}}
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}} 
+          AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
+          AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}

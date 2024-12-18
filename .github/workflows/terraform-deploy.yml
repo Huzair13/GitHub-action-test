@@ -57,7 +57,7 @@ jobs:
       - name: Destroy Terraform Infrastructure
         run: terraform destroy -auto-approve
         working-directory: ${{ inputs.working_directory }}
-        env:s
+        env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}

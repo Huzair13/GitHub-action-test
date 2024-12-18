@@ -6,12 +6,15 @@ on:
       terraform_version:
         description: "The Terraform version to use"
         default: "1.5.2"
+        type: string
       working_directory:
         description: "Directory containing Terraform files"
         default: "./terraform"
+        type: string
 
 jobs:
-  terraform:
+  validate-plan:
+    name: Validate and Plan
     runs-on: ubuntu-latest
 
     steps:
@@ -32,10 +35,24 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
 
       - name: Plan Terraform
-        run: terraform plan
+        run: terraform plan -out=tfplan
         working-directory: ${{ inputs.working_directory }}
 
-      - name: Apply Terraform (Manual Trigger)
-        if: github.event_name == 'workflow_dispatch'
-        run: terraform apply -auto-approve
+  deploy:
+    name: Deploy
+    needs: validate-plan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+
+      - name: Apply Terraform Plan
+        run: terraform apply -auto-approve tfplan
         working-directory: ${{ inputs.working_directory }}

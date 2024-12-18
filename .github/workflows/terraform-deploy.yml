@@ -11,18 +11,6 @@ on:
         description: "Directory containing Terraform files"
         default: "./terraform"
         type: string
-      aws_access_key_id:
-        description: "AWS Access Key ID"
-        required: true
-        type: string
-      aws_secret_access_key:
-        description: "AWS Secret Access Key"
-        required: true
-        type: string
-      aws_session_token:
-        description: "AWS Session Token"
-        required: true
-        type: string
 
 jobs:
   validate-plan:
@@ -45,9 +33,9 @@ jobs:
       - name: Print environment variables (for debugging, should be removed in production)
         run: printenv
         env:
-          AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
-          AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
-          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+          AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
 
       - name: Validate Terraform
         run: terraform validate
@@ -57,9 +45,9 @@ jobs:
         run: terraform plan -out=tfplan
         working-directory: ${{ inputs.working_directory }}
         env:
-          AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
-          AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
-          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+          AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
 
   deploy:
     name: Deploy
@@ -80,13 +68,13 @@ jobs:
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ inputs.working_directory }}
         env:
-          AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
-          AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
-          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+          AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
 
       - name: Print environment variables (for debugging, should be removed in production)
         run: printenv
         env:
-          AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
-          AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
-          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+          AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
